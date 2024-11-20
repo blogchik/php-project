@@ -29,6 +29,8 @@ require_once __DIR__ . '/../src/classes/TelegramBot.php';
 use App\Classes\Logger;
 use App\Classes\TelegramBot;
 
+require __DIR__ . '/../src/functions/database.php';
+
 date_default_timezone_set($config['app']['timezone']);
 
 $logger = new Logger();

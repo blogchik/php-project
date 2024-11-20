@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Functions;
-
-function dbquery($query, $params = [])
+function database($config, $query, $params = [])
 {
-    $host = $_ENV['MYSQL_HOST'];
-    $username = $_ENV['MYSQL_USERNAME'];
-    $password = $_ENV['MYSQL_PASSWORD'];
-    $database = $_ENV['MYSQL_DATABASE'];
+    $host = $config['database']['host'];
+    $username = $config['database']['username'];
+    $password = $config['database']['password'];
+    $database = $config['database']['database'];
+    $charset = $config['database']['charset'];
 
     $conn = new mysqli($host, $username, $password, $database);
 
@@ -15,7 +14,7 @@ function dbquery($query, $params = [])
         die("MySQL connection error: " . $conn->connect_error);
     }
 
-    $conn->set_charset("utf8mb4");
+    $conn->set_charset($charset);
 
     if ($stmt = $conn->prepare($query)) {
         if (!empty($params)) {
@@ -25,7 +24,7 @@ function dbquery($query, $params = [])
 
         $stmt->execute();
 
-        if (str_starts_with(strtolower($query), 'select')) {
+        if (str_starts_with(strtolower(trim($query)), 'select')) {
             $result = $stmt->get_result();
             $data = $result->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
